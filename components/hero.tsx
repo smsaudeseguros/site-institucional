@@ -13,23 +13,23 @@ export function Hero() {
                 <Shield className="mr-2 h-4 w-4" />
                 Segurança e Previsibilidade
               </div>
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-slate-900">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl xl:text-6xl/none text-slate-900 break-words">
                 O futuro da sua família não pode depender da sorte.
               </h1>
-              <p className="max-w-[600px] text-slate-600 md:text-xl">
+              <p className="max-w-[600px] text-slate-600 text-base md:text-xl">
                 Você cuida de tudo e de todos. Mas quem cuida de você?
                 Garanta planos de saúde e seguros com a solidez que sua família merece.
                 Durma tranquilo sabendo que fez a escolha certa.
               </p>
             </div>
-            <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-base sm:text-lg px-8 w-full sm:w-auto">
                 <Link href="#contact">
                   Fazer Cotação Personalizada
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 border-primary text-primary hover:bg-green-50">
+              <Button asChild variant="outline" size="lg" className="text-base sm:text-lg px-8 border-primary text-primary hover:bg-green-50 w-full sm:w-auto">
                 <Link href="#about">
                   Conhecer a SM Saúde
                 </Link>
