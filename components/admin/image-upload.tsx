@@ -15,7 +15,7 @@ interface ImageUploadProps {
   bucket?: string
 }
 
-export function ImageUpload({ value, onChange, disabled, bucket = process.env.NEXT_PUBLIC_SUPABASE_BUCKET || "app-smsaudeeseguros-institucional" }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, disabled, bucket = process.env.NEXT_PUBLIC_SUPABASE_BUCKET! }: ImageUploadProps) {
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
