@@ -44,15 +44,7 @@ export default function HeroPage() {
     e.preventDefault()
     setSaving(true)
     try {
-      const { count } = await supabase.from('hero_section').select('*', { count: 'exact', head: true }).eq('id', 1)
-      let error;
-      if (count === 0) {
-          const { error: insertError } = await supabase.from('hero_section').insert({ ...data, id: 1 })
-          error = insertError
-      } else {
-          const { error: updateError } = await supabase.from('hero_section').update(data).eq('id', 1)
-          error = updateError
-      }
+      const { error } = await supabase.from('hero_section').upsert({ ...data, id: 1 })
 
       if (error) throw error
       toast.success("Hero Banner salvo com sucesso!")
