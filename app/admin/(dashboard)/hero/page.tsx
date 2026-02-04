@@ -2,15 +2,15 @@
 
 export const dynamic = "force-dynamic"
 
-import { ImageUpload } from "@/components/admin/image-upload"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { createClient } from "@/lib/supabase/client"
-import { useEffect, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { ImageUpload } from "@/components/admin/image-upload"
 
 export default function HeroPage() {
   const [loading, setLoading] = useState(true)
@@ -73,7 +73,7 @@ export default function HeroPage() {
   if (loading) return <div>Carregando...</div>
 
   return (
-    <div className="w-full mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <h1 className="text-3xl font-bold">Hero Banner</h1>
       <form onSubmit={handleSave} className="space-y-6">
 
