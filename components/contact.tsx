@@ -3,39 +3,50 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Mail, MapPin, Phone, Send } from "lucide-react"
-import { supabase, isSupabaseConfigured } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
 
-export function Contact() {
+interface ContactProps {
+  data?: {
+    contact_phone?: string
+    contact_email?: string
+    contact_address?: string
+  }
+}
+
+export function Contact({ data }: ContactProps) {
+  const {
+    contact_phone = "(15) 99999-9999",
+    contact_email = "contato@smsaudeseguros.com.br",
+    contact_address = "Sorocaba, SP (Atendimento Nacional)"
+  } = data || {}
+
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [submitted, setSubmitted] = React.useState(false)
+  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     const formData = new FormData(e.currentTarget)
-    const data = {
+    const submissionData = {
       name: formData.get("name"),
       phone: formData.get("phone"),
       email: formData.get("email"),
       interest: formData.get("interest"),
       message: formData.get("message"),
-      created_at: new Date().toISOString(),
     }
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        const { error } = await supabase.from('leads').insert([data])
-        if (error) throw error
-      } else {
-         // Fallback / Simulation
-         await new Promise(resolve => setTimeout(resolve, 1500))
-         console.log("Supabase not configured. Mock submission:", data)
-      }
+      const { error } = await supabase.from('leads').insert([submissionData])
+      if (error) throw error
+
       setSubmitted(true)
+      toast.success("Mensagem enviada com sucesso!")
     } catch (error) {
       console.error("Error submitting form:", error)
-      alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato pelo WhatsApp.")
+      toast.error("Ocorreu um erro ao enviar. Tente novamente.")
     } finally {
       setIsSubmitting(false)
     }
@@ -60,7 +71,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-medium text-slate-900">Telefone / WhatsApp</p>
-                  <p className="text-slate-600">(15) 99999-9999</p>
+                  <p className="text-slate-600">{contact_phone}</p>
                 </div>
               </div>
 
@@ -70,7 +81,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-medium text-slate-900">E-mail</p>
-                  <p className="text-slate-600">contato@smsaudeseguros.com.br</p>
+                  <p className="text-slate-600">{contact_email}</p>
                 </div>
               </div>
 
@@ -80,7 +91,7 @@ export function Contact() {
                 </div>
                 <div>
                   <p className="font-medium text-slate-900">Localização</p>
-                  <p className="text-slate-600">Sorocaba, SP (Atendimento Nacional)</p>
+                  <p className="text-slate-600">{contact_address}</p>
                 </div>
               </div>
             </div>

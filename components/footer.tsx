@@ -2,7 +2,25 @@ import Link from "next/link"
 import Image from "next/image"
 import { Instagram, Facebook, Linkedin } from "lucide-react"
 
-export function Footer() {
+interface FooterProps {
+  data?: {
+    logo_url?: string
+    footer_text?: string
+    social_instagram?: string
+    social_facebook?: string
+    social_linkedin?: string
+  }
+}
+
+export function Footer({ data }: FooterProps) {
+  const {
+    logo_url = "/logo.png",
+    footer_text = "Consultoria especializada em proteger o que mais importa para você. Solidez, confiança e atendimento humanizado.",
+    social_instagram = "#",
+    social_facebook = "#",
+    social_linkedin = "#"
+  } = data || {}
+
   return (
     <footer className="bg-slate-900 text-slate-300 py-12">
       <div className="container mx-auto px-4 md:px-6">
@@ -10,7 +28,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="inline-block bg-white p-2 rounded-lg">
               <Image
-                src="/logo.png"
+                src={logo_url}
                 alt="SM Saúde e Seguros"
                 width={140}
                 height={50}
@@ -18,8 +36,7 @@ export function Footer() {
               />
             </div>
             <p className="text-sm leading-relaxed">
-              Consultoria especializada em proteger o que mais importa para você.
-              Solidez, confiança e atendimento humanizado.
+              {footer_text}
             </p>
           </div>
 
@@ -46,15 +63,15 @@ export function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Redes Sociais</h3>
             <div className="flex gap-4">
-              <Link href="#" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
+              <Link href={social_instagram} target="_blank" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="#" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
+              <Link href={social_facebook} target="_blank" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
                 <Facebook className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
+              <Link href={social_linkedin} target="_blank" className="bg-slate-800 p-2 rounded-full hover:bg-primary hover:text-white transition-colors">
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
               </Link>

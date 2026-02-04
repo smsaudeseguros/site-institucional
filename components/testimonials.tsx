@@ -1,25 +1,13 @@
 import { Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
-const testimonials = [
-  {
-    name: "Ricardo Mendes",
-    role: "Empresário",
-    content: "Eu sempre tive receio de seguros, achava complicado. A SM Saúde me explicou tudo com tanta clareza que me senti seguro para fechar o plano de saúde da minha família e o seguro da empresa.",
-  },
-  {
-    name: "Fernanda Costa",
-    role: "Advogada",
-    content: "O atendimento do Matheus foi excepcional. Quando precisei usar o seguro do carro, eles resolveram tudo. Não precisei me estressar com nada. Recomendo de olhos fechados.",
-  },
-  {
-    name: "Jorge Alvarez",
-    role: "Aposentado",
-    content: "Fiz meu seguro de vida pensando na minha esposa. A tranquilidade de saber que ela estará amparada não tem preço. Agradeço ao Silvio pela paciência e consultoria.",
-  },
-]
+interface TestimonialsProps {
+  data?: any[]
+}
 
-export function Testimonials() {
+export function Testimonials({ data }: TestimonialsProps) {
+  const testimonials = data || []
+
   return (
     <section id="testimonials" className="py-20 bg-white">
       <div className="container mx-auto px-4 md:px-6">

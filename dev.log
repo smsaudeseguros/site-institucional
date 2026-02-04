@@ -4,12 +4,27 @@
 
   ▲ Next.js 14.2.35
   - Local:        http://localhost:3000
+  - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 3.1s
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1874ms
  ○ Compiling / ...
- ✓ Compiled / in 7.5s (751 modules)
- GET / 200 in 8064ms
- ✓ Compiled in 789ms (343 modules)
- GET / 200 in 235ms
-[?25h
+ ✓ Compiled / in 15s (2172 modules)
+ ✓ Compiled in 1660ms (350 modules)
+ GET / 200 in 17392ms
+ ○ Compiling /admin/login ...
+ ✓ Compiled /admin/login in 3.4s (2197 modules)
+ GET /admin/login 200 in 4521ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 795ms (2237 modules)
+ ✓ Compiled in 3.7s (2224 modules)
+ ✓ Compiled in 229ms (387 modules)
+ ✓ Compiled in 624ms (2224 modules)
+ ✓ Compiled in 1538ms (387 modules)
+ ✓ Compiled in 1676ms (2224 modules)
+ ✓ Compiled in 684ms (2224 modules)

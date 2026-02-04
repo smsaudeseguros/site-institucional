@@ -7,18 +7,33 @@ import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AGGER_SYSTEM_URL } from "@/lib/constants"
 
-export function Header() {
+interface HeaderProps {
+  logoUrl?: string
+  menuItems?: any[]
+  ctaText?: string
+  ctaLink?: string
+}
+
+export function Header({
+  logoUrl = "/logo.png",
+  menuItems = [],
+  ctaText = "Cotar Agora",
+  ctaLink = "#contact"
+}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
-  const navItems = [
-    { name: "Início", href: "#hero" },
-    { name: "Sobre", href: "#about" },
-    { name: "Serviços", href: "#services" },
-    { name: "Depoimentos", href: "#testimonials" },
-    { name: "FAQ", href: "#faq" },
+  // Fallback items if database is empty or error
+  const defaultItems = [
+    { label: "Início", url: "#hero" },
+    { label: "Sobre", url: "#about" },
+    { label: "Serviços", url: "#services" },
+    { label: "Depoimentos", url: "#testimonials" },
+    { label: "FAQ", url: "#faq" },
   ]
+
+  const items = (menuItems && menuItems.length > 0) ? menuItems : defaultItems
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -26,7 +41,7 @@ export function Header() {
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo.png"
+              src={logoUrl || "/logo.png"}
               alt="SM Saúde e Seguros"
               width={160}
               height={50}
@@ -37,13 +52,13 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
+            {items.map((item) => (
               <Link
-                key={item.name}
-                href={item.href}
+                key={item.id || item.label}
+                href={item.url}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
               >
-                {item.name}
+                {item.label}
               </Link>
             ))}
             <Button asChild variant="ghost" className="text-primary hover:text-primary/80 hover:bg-green-50">
@@ -52,7 +67,7 @@ export function Header() {
               </Link>
             </Button>
             <Button asChild>
-              <Link href="#contact">Cotar Agora</Link>
+              <Link href={ctaLink || "#contact"}>{ctaText || "Cotar Agora"}</Link>
             </Button>
           </nav>
 
@@ -75,14 +90,14 @@ export function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t bg-white">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-            {navItems.map((item) => (
+            {items.map((item) => (
               <Link
-                key={item.name}
-                href={item.href}
+                key={item.id || item.label}
+                href={item.url}
                 className="text-base font-medium text-foreground hover:text-primary"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {item.name}
+                {item.label}
               </Link>
             ))}
             <Button asChild variant="outline" className="w-full border-primary text-primary hover:bg-green-50">
@@ -91,7 +106,7 @@ export function Header() {
               </Link>
             </Button>
              <Button asChild className="w-full">
-              <Link href="#contact" onClick={() => setIsMenuOpen(false)}>Cotar Agora</Link>
+              <Link href={ctaLink || "#contact"} onClick={() => setIsMenuOpen(false)}>{ctaText || "Cotar Agora"}</Link>
             </Button>
           </div>
         </div>
