@@ -120,7 +120,7 @@ export default function UsersPage() {
           </div>
           <div className="space-y-2">
             <Label>Senha Temporária</Label>
-            <Input name="password" type="text" required minLength={6} placeholder="********" />
+            <Input name="password" type="password" required minLength={6} placeholder="********" />
           </div>
           <div className="space-y-2">
             <Label>Função</Label>
