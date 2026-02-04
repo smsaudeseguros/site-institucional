@@ -33,3 +33,48 @@ https://nextjs.org/telemetry
  ✓ Compiled in 12.1s (1837 modules)
  ✓ Compiled in 596ms (387 modules)
  ✓ Compiled in 2.5s (2210 modules)
+ ⨯ ./app/admin/login/page.tsx
+Error:
+  [31mx[0m The "use client" directive must be placed before other expressions. Move it to the top of the file to resolve this issue.
+   ,-[[36;1;4m/app/app/admin/login/page.tsx[0m:1:1]
+ [2m1[0m | export const dynamic = 'force-dynamic'
+ [2m2[0m | "use client"
+   : [31;1m^^^^^^^^^^^^[0m
+ [2m3[0m |
+ [2m4[0m | import { useState } from "react"
+ [2m5[0m | import { useRouter } from "next/navigation"
+   `----
+
+  [31mx[0m You're importing a component that needs useState. It only works in a Client Component but none of its parents are marked with "use client", so they're Server Components by default.
+  [31m|[0m Learn more: https://nextjs.org/docs/getting-started/react-essentials
+  [31m|[0m
+  [31m|[0m
+   ,-[[36;1;4m/app/app/admin/login/page.tsx[0m:1:1]
+ [2m1[0m | export const dynamic = 'force-dynamic'
+ [2m2[0m | "use client"
+ [2m3[0m |
+ [2m4[0m | import { useState } from "react"
+   : [31;1m         ^^^^^^^^[0m
+ [2m5[0m | import { useRouter } from "next/navigation"
+ [2m6[0m | import Image from "next/image"
+ [2m7[0m | import { createClient } from "@/lib/supabase/client"
+   `----
+
+  [31mx[0m You're importing a component that needs useRouter. It only works in a Client Component but none of its parents are marked with "use client", so they're Server Components by default.
+  [31m|[0m Learn more: https://nextjs.org/docs/getting-started/react-essentials
+  [31m|[0m
+  [31m|[0m
+   ,-[[36;1;4m/app/app/admin/login/page.tsx[0m:2:1]
+ [2m2[0m | "use client"
+ [2m3[0m |
+ [2m4[0m | import { useState } from "react"
+ [2m5[0m | import { useRouter } from "next/navigation"
+   : [31;1m         ^^^^^^^^^[0m
+ [2m6[0m | import Image from "next/image"
+ [2m7[0m | import { createClient } from "@/lib/supabase/client"
+ [2m8[0m | import { Button } from "@/components/ui/button"
+   `----
+
+Import trace for requested module:
+./app/admin/login/page.tsx
+ ✓ Compiled in 3.8s (2224 modules)
