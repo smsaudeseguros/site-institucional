@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${josefinSans.variable} antialiased`}
+        className={`${josefinSans.variable} font-sans antialiased`}
       >
         {children}
         <Toaster />

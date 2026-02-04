@@ -16,7 +16,10 @@ import {
   Menu
 } from "lucide-react"
 
+import { User } from "lucide-react"
+
 const sidebarItems = [
+  { href: "/admin/profile", icon: User, label: "Meu Perfil" },
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/leads", icon: MessageSquare, label: "Leads" },
   { href: "/admin/hero", icon: LayoutTemplate, label: "Hero Banner" },

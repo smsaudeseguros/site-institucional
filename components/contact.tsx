@@ -11,6 +11,8 @@ interface ContactProps {
     contact_phone?: string
     contact_email?: string
     contact_address?: string
+    contact_whatsapp_matheus?: string
+    contact_whatsapp_silvio?: string
   }
 }
 
@@ -18,7 +20,9 @@ export function Contact({ data }: ContactProps) {
   const {
     contact_phone = "(15) 99999-9999",
     contact_email = "contato@smsaudeseguros.com.br",
-    contact_address = "Sorocaba, SP (Atendimento Nacional)"
+    contact_address = "Sorocaba, SP (Atendimento Nacional)",
+    contact_whatsapp_matheus = "https://wa.me/5515991849321",
+    contact_whatsapp_silvio = "https://wa.me/5511992668941"
   } = data || {}
 
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -70,10 +74,38 @@ export function Contact({ data }: ContactProps) {
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-900">Telefone / WhatsApp</p>
+                  <p className="font-medium text-slate-900">Telefone Geral</p>
                   <p className="text-slate-600">{contact_phone}</p>
                 </div>
               </div>
+
+              {contact_whatsapp_matheus && (
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-900">Especialista Matheus</p>
+                    <a href={contact_whatsapp_matheus} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
+                      Chamar no WhatsApp
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {contact_whatsapp_silvio && (
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-900">Especialista Silvio</p>
+                    <a href={contact_whatsapp_silvio} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
+                      Chamar no WhatsApp
+                    </a>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">

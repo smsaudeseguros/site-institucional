@@ -13,9 +13,12 @@ interface HeroProps {
     hero_image_url?: string
     quote_text?: string
   }
+  siteConfig?: {
+    cta_link?: string
+  }
 }
 
-export function Hero({ data }: HeroProps) {
+export function Hero({ data, siteConfig }: HeroProps) {
   const {
     title = "O futuro da sua família não pode depender da sorte.",
     subtitle = "Você cuida de tudo e de todos. Mas quem cuida de você? Garanta planos de saúde e seguros com a solidez que sua família merece. Durma tranquilo sabendo que fez a escolha certa.",
@@ -26,6 +29,8 @@ export function Hero({ data }: HeroProps) {
     hero_image_url = "https://images.unsplash.com/photo-1516733968668-dbdce39c4651?q=80&w=800&auto=format&fit=crop",
     quote_text = "Se algo acontecer, eu preciso ter feito tudo o que estava ao meu alcance."
   } = data || {}
+
+  const finalCtaLink = siteConfig?.cta_link || cta_primary_link
 
   return (
     <section id="hero" className="relative overflow-hidden bg-brand-gradient py-20 md:py-32">
@@ -46,14 +51,9 @@ export function Hero({ data }: HeroProps) {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="bg-white text-primary hover:bg-slate-100 text-base sm:text-lg px-8 w-full sm:w-auto border-none">
-                <Link href={cta_primary_link}>
+                <Link href={finalCtaLink}>
                   {cta_primary_text}
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-base sm:text-lg px-8 border-white text-white hover:bg-white/20 bg-transparent w-full sm:w-auto">
-                <Link href={cta_secondary_link}>
-                  {cta_secondary_text}
                 </Link>
               </Button>
             </div>
