@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { Mail, MapPin, Phone, Send } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { Mail, MapPin, Phone, Send } from "lucide-react"
+import * as React from "react"
 import { toast } from "sonner"
 
 interface ContactProps {
@@ -69,15 +69,20 @@ export function Contact({ data }: ContactProps) {
             </p>
 
             <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Phone className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium text-slate-900">Telefone Geral</p>
-                  <p className="text-slate-600">{contact_phone}</p>
-                </div>
-              </div>
+
+              {
+                contact_phone && (
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <Phone className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-slate-900">Telefone para Contato</p>
+                      <p className="text-slate-600">{contact_phone}</p>
+                    </div>
+                  </div>
+                )
+              }
 
               {contact_whatsapp_matheus && (
                 <div className="flex items-center gap-4">
