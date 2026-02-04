@@ -61,11 +61,6 @@ export function Header({
                 {item.label}
               </Link>
             ))}
-            <Button asChild variant="ghost" className="text-primary hover:text-primary/80 hover:bg-green-50">
-              <Link href={AGGER_SYSTEM_URL} target="_blank" rel="noopener noreferrer">
-                Área do Cliente
-              </Link>
-            </Button>
             <Button asChild>
               <Link href={ctaLink || "#contact"}>{ctaText || "Cotar Agora"}</Link>
             </Button>
