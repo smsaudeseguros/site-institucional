@@ -1,11 +1,11 @@
 "use client"
 
-import * as React from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AGGER_SYSTEM_URL } from "@/lib/constants"
+import { Menu, X } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import * as React from "react"
 
 interface HeaderProps {
   logoUrl?: string
@@ -18,7 +18,7 @@ export function Header({
   logoUrl = "/logo.png",
   menuItems = [],
   ctaText = "Cotar Agora",
-  ctaLink = "#contact"
+  ctaLink = "https://smsaudesegurosltda.aggilizador.com.br/"
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
 
@@ -67,7 +67,7 @@ export function Header({
               </Link>
             </Button>
             <Button asChild>
-              <Link href={ctaLink || "#contact"}>{ctaText || "Cotar Agora"}</Link>
+              <Link href={ctaLink || "https://smsaudesegurosltda.aggilizador.com.br/"}>{ctaText || "Cotar Agora"}</Link>
             </Button>
           </nav>
 
