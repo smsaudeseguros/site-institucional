@@ -43,7 +43,7 @@ export default async function Home() {
         ctaLink={siteConfig?.header_cta_link}
       />
       <main className="flex-1">
-        <Hero data={heroSection} />
+        <Hero data={heroSection} siteConfig={siteConfig} />
         <Services data={solutions || []} />
         <About data={{ section: aboutSection, spotlights: aboutSpotlights || [], images: aboutImages || [] }} />
         <Testimonials data={testimonials || []} />
