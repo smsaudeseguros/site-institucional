@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Mail, MapPin, Phone, Send } from "lucide-react"
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -12,12 +13,32 @@ export function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      name: formData.get("name"),
+      phone: formData.get("phone"),
+      email: formData.get("email"),
+      interest: formData.get("interest"),
+      message: formData.get("message"),
+      created_at: new Date().toISOString(),
+    }
 
-    console.log("Form submitted")
-    setIsSubmitting(false)
-    setSubmitted(true)
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error } = await supabase.from('leads').insert([data])
+        if (error) throw error
+      } else {
+         // Fallback / Simulation
+         await new Promise(resolve => setTimeout(resolve, 1500))
+         console.log("Supabase not configured. Mock submission:", data)
+      }
+      setSubmitted(true)
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato pelo WhatsApp.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -81,6 +102,7 @@ export function Contact() {
                   <label htmlFor="name" className="text-sm font-medium text-slate-700">Nome Completo</label>
                   <input
                     id="name"
+                    name="name"
                     required
                     className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Ex: Carlos Silva"
@@ -91,6 +113,7 @@ export function Contact() {
                     <label htmlFor="phone" className="text-sm font-medium text-slate-700">Telefone</label>
                     <input
                       id="phone"
+                      name="phone"
                       required
                       type="tel"
                       className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -101,6 +124,7 @@ export function Contact() {
                     <label htmlFor="email" className="text-sm font-medium text-slate-700">E-mail</label>
                     <input
                       id="email"
+                      name="email"
                       type="email"
                       required
                       className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -112,6 +136,7 @@ export function Contact() {
                   <label htmlFor="interest" className="text-sm font-medium text-slate-700">Tenho interesse em</label>
                   <select
                     id="interest"
+                    name="interest"
                     className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
                     <option>Plano de Saúde</option>
@@ -125,6 +150,7 @@ export function Contact() {
                    <label htmlFor="message" className="text-sm font-medium text-slate-700">Mensagem (Opcional)</label>
                    <textarea
                       id="message"
+                      name="message"
                       className="flex min-h-[100px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="Conte um pouco mais sobre o que você precisa..."
                    />

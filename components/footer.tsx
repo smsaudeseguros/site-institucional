@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ShieldCheck, Instagram, Facebook, Linkedin } from "lucide-react"
+import Image from "next/image"
+import { Instagram, Facebook, Linkedin } from "lucide-react"
 
 export function Footer() {
   return (
@@ -7,9 +8,14 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-white">
-              <ShieldCheck className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">SM Saúde e Seguros</span>
+            <div className="inline-block bg-white p-2 rounded-lg">
+              <Image
+                src="/logo.png"
+                alt="SM Saúde e Seguros"
+                width={140}
+                height={50}
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <p className="text-sm leading-relaxed">
               Consultoria especializada em proteger o que mais importa para você.

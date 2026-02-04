@@ -2,8 +2,10 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Menu, X, ShieldCheck } from "lucide-react"
+import Image from "next/image"
+import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { AGGER_SYSTEM_URL } from "@/lib/constants"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
@@ -23,11 +25,14 @@ export function Header() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-primary" />
-            <div className="flex flex-col">
-              <span className="text-xl font-bold leading-none text-primary">SM Saúde</span>
-              <span className="text-sm font-semibold leading-none text-secondary">e Seguros</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="SM Saúde e Seguros"
+              width={160}
+              height={50}
+              className="h-12 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -41,6 +46,11 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            <Button asChild variant="ghost" className="text-primary hover:text-primary/80 hover:bg-green-50">
+              <Link href={AGGER_SYSTEM_URL} target="_blank" rel="noopener noreferrer">
+                Área do Cliente
+              </Link>
+            </Button>
             <Button asChild className="bg-primary hover:bg-primary/90">
               <Link href="#contact">Cotar Agora</Link>
             </Button>
@@ -75,6 +85,11 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            <Button asChild variant="outline" className="w-full border-primary text-primary hover:bg-green-50">
+              <Link href={AGGER_SYSTEM_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)}>
+                Área do Cliente
+              </Link>
+            </Button>
              <Button asChild className="w-full bg-primary hover:bg-primary/90">
               <Link href="#contact" onClick={() => setIsMenuOpen(false)}>Cotar Agora</Link>
             </Button>
