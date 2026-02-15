@@ -19,12 +19,12 @@ export function Services({ data }: ServicesProps) {
             Coberturas completas para todas as áreas da sua vida.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap justify-center gap-6">
           {services.map((service, index) => {
              const Icon = (Icons as any)[service.icon_name] || Icons.HelpCircle
 
              return (
-                <Card key={index} className="relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-none">
+                <Card key={index} className="relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-none w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
                   <div className="absolute top-0 left-0 right-0 h-1.5 bg-brand-gradient" />
                   <CardHeader>
                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-green-50 text-primary">
