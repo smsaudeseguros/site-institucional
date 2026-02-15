@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { Pencil, Trash, Plus } from "lucide-react"
 
@@ -123,36 +123,41 @@ export default function MenuPage() {
         </Table>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen} title={editingItem ? "Editar Item" : "Novo Item"}>
-        <form onSubmit={handleSave} className="space-y-4">
-          <div className="space-y-2">
-            <Label>Rótulo</Label>
-            <Input
-              value={formData.label}
-              onChange={(e) => setFormData({...formData, label: e.target.value})}
-              required
-              placeholder="Ex: Início"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Link (URL)</Label>
-            <Input
-              value={formData.url}
-              onChange={(e) => setFormData({...formData, url: e.target.value})}
-              required
-              placeholder="Ex: #hero ou /pagina"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Ordem de Exibição</Label>
-            <Input
-              type="number"
-              value={formData.sort_order}
-              onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value)})}
-            />
-          </div>
-          <Button type="submit" className="w-full">Salvar</Button>
-        </form>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>{editingItem ? "Editar Item" : "Novo Item"}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSave} className="space-y-4">
+            <div className="space-y-2">
+                <Label>Rótulo</Label>
+                <Input
+                value={formData.label}
+                onChange={(e) => setFormData({...formData, label: e.target.value})}
+                required
+                placeholder="Ex: Início"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label>Link (URL)</Label>
+                <Input
+                value={formData.url}
+                onChange={(e) => setFormData({...formData, url: e.target.value})}
+                required
+                placeholder="Ex: #hero ou /pagina"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label>Ordem de Exibição</Label>
+                <Input
+                type="number"
+                value={formData.sort_order}
+                onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value)})}
+                />
+            </div>
+            <Button type="submit" className="w-full">Salvar</Button>
+            </form>
+        </DialogContent>
       </Dialog>
     </div>
   )

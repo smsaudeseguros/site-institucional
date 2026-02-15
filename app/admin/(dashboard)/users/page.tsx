@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { Trash, Plus, ShieldAlert } from "lucide-react"
 import { createUser, deleteUser } from "./actions"
@@ -114,25 +114,30 @@ export default function UsersPage() {
         </Table>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen} title="Novo Usuário">
-        <form action={handleCreate} className="space-y-4">
-          <div className="space-y-2">
-            <Label>Email</Label>
-            <Input name="email" type="email" required placeholder="novo@email.com" />
-          </div>
-          <div className="space-y-2">
-            <Label>Senha Temporária</Label>
-            <Input name="password" type="text" required minLength={6} placeholder="********" />
-          </div>
-          <div className="space-y-2">
-            <Label>Função</Label>
-            <select name="role" className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950">
-                <option value="editor">Editor (Conteúdo)</option>
-                <option value="admin">Administrador (Total)</option>
-            </select>
-          </div>
-          <Button type="submit" className="w-full">Criar Usuário</Button>
-        </form>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Novo Usuário</DialogTitle>
+            </DialogHeader>
+            <form action={handleCreate} className="space-y-4">
+            <div className="space-y-2">
+                <Label>Email</Label>
+                <Input name="email" type="email" required placeholder="novo@email.com" />
+            </div>
+            <div className="space-y-2">
+                <Label>Senha Temporária</Label>
+                <Input name="password" type="text" required minLength={6} placeholder="********" />
+            </div>
+            <div className="space-y-2">
+                <Label>Função</Label>
+                <select name="role" className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950">
+                    <option value="editor">Editor (Conteúdo)</option>
+                    <option value="admin">Administrador (Total)</option>
+                </select>
+            </div>
+            <Button type="submit" className="w-full">Criar Usuário</Button>
+            </form>
+        </DialogContent>
       </Dialog>
     </div>
   )
