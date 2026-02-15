@@ -44,7 +44,9 @@ export default function LeadsPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Leads (Contatos)</h1>
-      <div className="bg-white rounded-md border">
+
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -80,6 +82,45 @@ export default function LeadsPage() {
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {leads.map((lead) => (
+          <div key={lead.id} className="bg-white p-4 rounded-lg border shadow-sm space-y-3">
+            <div className="flex justify-between items-start">
+               <div>
+                  <h3 className="font-semibold text-lg">{lead.name}</h3>
+                  <span className="text-xs text-gray-500">{new Date(lead.created_at).toLocaleDateString()}</span>
+                  <p className="text-sm text-blue-600 font-medium">{lead.interest}</p>
+               </div>
+               <div className="flex gap-2">
+                 <Button variant="ghost" size="icon" asChild>
+                    <a href={`https://wa.me/55${formatWhatsApp(lead.phone)}`} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="h-4 w-4 text-green-600" />
+                    </a>
+                  </Button>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-1 text-sm text-gray-700">
+               <div className="flex items-center gap-2">
+                  <Mail className="h-3 w-3 text-gray-400" /> {lead.email}
+               </div>
+               <div className="flex items-center gap-2">
+                  <Phone className="h-3 w-3 text-gray-400" /> {lead.phone}
+               </div>
+            </div>
+
+            <div className="bg-slate-50 p-3 rounded text-sm text-gray-600">
+               {lead.message || "Sem mensagem."}
+            </div>
+
+            <Button variant="outline" size="sm" className="w-full" onClick={() => handleReply(lead)}>
+                <Mail className="h-4 w-4 mr-2" /> Responder por Email
+            </Button>
+          </div>
+        ))}
       </div>
     </div>
   )

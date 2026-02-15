@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { IconPicker } from "@/components/admin/icon-picker"
 import { toast } from "sonner"
 import { Pencil, Trash, Plus } from "lucide-react"
@@ -47,6 +47,7 @@ export default function SolutionsPage() {
       toast.success("Item excluído")
       fetchItems()
     } catch (error) {
+      console.error(error)
       toast.error("Erro ao excluir")
     }
   }
@@ -70,12 +71,18 @@ export default function SolutionsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const dataToSave = {
+        ...formData,
+        // Ensure sort_order is an integer
+        sort_order: parseInt(formData.sort_order.toString()) || 0
+      }
+
       if (editingItem) {
-        const { error } = await supabase.from('solutions').update(formData).eq('id', editingItem.id)
+        const { error } = await supabase.from('solutions').update(dataToSave).eq('id', editingItem.id)
         if (error) throw error
         toast.success("Atualizado com sucesso")
       } else {
-        const { error } = await supabase.from('solutions').insert(formData)
+        const { error } = await supabase.from('solutions').insert(dataToSave)
         if (error) throw error
         toast.success("Criado com sucesso")
       }
@@ -92,11 +99,12 @@ export default function SolutionsPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Nossas Soluções</h1>
         <Button onClick={() => handleOpen()}>
-          <Plus className="mr-2 h-4 w-4" /> Adicionar
+          <Plus className="mr-2 h-4 w-4" /> <span className="hidden sm:inline">Adicionar</span>
         </Button>
       </div>
 
-      <div className="bg-white rounded-md border">
+      {/* Desktop Table View */}
+      <div className="hidden md:block bg-white rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -126,38 +134,66 @@ export default function SolutionsPage() {
         </Table>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen} title={editingItem ? "Editar Solução" : "Nova Solução"}>
-        <form onSubmit={handleSave} className="space-y-4">
-          <div className="space-y-2">
-             <Label>Ícone</Label>
-             <IconPicker value={formData.icon_name} onChange={(val) => setFormData({...formData, icon_name: val})} />
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {items.map((item) => (
+          <div key={item.id} className="bg-white p-4 rounded-lg border shadow-sm space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-lg">{item.title}</h3>
+                <p className="text-sm text-gray-500">Ordem: {item.sort_order} | Ícone: {item.icon_name}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="icon" onClick={() => handleOpen(item)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-red-600" onClick={() => handleDelete(item.id)}>
+                   <Trash className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
           </div>
-          <div className="space-y-2">
-            <Label>Título</Label>
-            <Input
-              value={formData.title}
-              onChange={(e) => setFormData({...formData, title: e.target.value})}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Descrição</Label>
-            <Textarea
-              value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Ordem de Exibição</Label>
-            <Input
-              type="number"
-              value={formData.sort_order}
-              onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value)})}
-            />
-          </div>
-          <Button type="submit" className="w-full">Salvar</Button>
-        </form>
+        ))}
+      </div>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>{editingItem ? "Editar Solução" : "Nova Solução"}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSave} className="space-y-4">
+            <div className="space-y-2">
+                <Label>Ícone</Label>
+                <IconPicker value={formData.icon_name} onChange={(val) => setFormData({...formData, icon_name: val})} />
+            </div>
+            <div className="space-y-2">
+                <Label>Título</Label>
+                <Input
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                required
+                />
+            </div>
+            <div className="space-y-2">
+                <Label>Descrição</Label>
+                <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                required
+                />
+            </div>
+            <div className="space-y-2">
+                <Label>Ordem de Exibição</Label>
+                <Input
+                type="number"
+                value={formData.sort_order}
+                onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value)})}
+                />
+            </div>
+            <Button type="submit" className="w-full">Salvar</Button>
+            </form>
+        </DialogContent>
       </Dialog>
     </div>
   )

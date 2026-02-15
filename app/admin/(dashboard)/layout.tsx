@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 import { AdminSidebar } from "@/components/admin/sidebar"
+import { MobileSidebar } from "@/components/admin/mobile-sidebar"
 import { UserNav } from "@/components/admin/user-nav"
 
 // Ensure this layout and its children are not statically generated
@@ -43,8 +44,7 @@ export default async function DashboardLayout({
       <div className="flex flex-col">
         <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-slate-50/40 px-6 dark:bg-slate-800/40">
             <div className="lg:hidden">
-                {/* Mobile Menu Trigger Placeholder - Implementing full mobile menu might take time, ignoring for now or just simple text */}
-                <span className="font-bold text-sm">Menu (Desktop Only)</span>
+                <MobileSidebar />
             </div>
             <div className="w-full flex-1">
                 <h1 className="font-semibold text-lg">Painel Administrativo</h1>
