@@ -68,7 +68,7 @@ export function About({ data }: AboutProps) {
             <div className="grid gap-2 sm:grid-cols-2">
               {displaySpotlights.map((benefit: any, index: number) => (
                 <div key={index} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-secondary flex-shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-blue-600 flex-shrink-0" />
                   <span className="text-sm font-medium text-slate-700">{benefit.text}</span>
                 </div>
               ))}
