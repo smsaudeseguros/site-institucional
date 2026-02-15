@@ -32,11 +32,14 @@ export function Hero({ data, siteConfig }: HeroProps) {
 
   const finalCtaLink = siteConfig?.cta_link || cta_primary_link
 
+  // Only render image if a URL is provided
+  const hasImage = !!hero_image_url && hero_image_url.trim() !== ""
+
   return (
     <section id="hero" className="relative overflow-hidden bg-brand-gradient py-20 md:py-32">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid gap-12 md:grid-cols-2 md:gap-8 items-center">
-          <div className="flex flex-col justify-center space-y-8">
+        <div className={`grid gap-12 items-center ${hasImage ? "md:grid-cols-2 md:gap-8" : "md:max-w-4xl md:mx-auto text-center"}`}>
+          <div className={`flex flex-col justify-center space-y-8 ${!hasImage ? "items-center" : ""}`}>
             <div className="space-y-4">
               <div className="inline-flex items-center rounded-lg bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
                 <Shield className="mr-2 h-4 w-4" />
@@ -45,7 +48,7 @@ export function Hero({ data, siteConfig }: HeroProps) {
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl xl:text-6xl/none text-white break-words">
                 {title}
               </h1>
-              <p className="max-w-[600px] text-slate-100 text-base md:text-xl">
+              <p className={`text-slate-100 text-base md:text-xl ${hasImage ? "max-w-[600px]" : "max-w-[800px] mx-auto"}`}>
                 {subtitle}
               </p>
             </div>
@@ -58,15 +61,18 @@ export function Hero({ data, siteConfig }: HeroProps) {
               </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-             {/* Hero Image */}
-             <div className="relative h-[400px] w-full max-w-[500px] overflow-hidden rounded-2xl bg-white/10 shadow-xl flex items-center justify-center border border-white/20 backdrop-blur-sm">
-                <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${hero_image_url}')` }}
-                ></div>
-             </div>
-          </div>
+
+          {hasImage && (
+            <div className="flex items-center justify-center">
+               {/* Hero Image */}
+               <div className="relative h-[400px] w-full max-w-[500px] overflow-hidden rounded-2xl bg-white/10 shadow-xl flex items-center justify-center border border-white/20 backdrop-blur-sm">
+                  <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url('${hero_image_url}')` }}
+                  ></div>
+               </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

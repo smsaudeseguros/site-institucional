@@ -38,6 +38,9 @@ export function About({ data }: AboutProps) {
     return () => clearInterval(interval)
   }, [images.length])
 
+  // Determine if images should be displayed
+  const hasImages = images && images.length > 0
+
   // Fallback spotlights if loading or empty (optional, but requested to seed)
   const displaySpotlights = spotlights.length > 0 ? spotlights : [
     { text: "Mais de 10 anos de experiência no mercado segurador" },
@@ -51,7 +54,7 @@ export function About({ data }: AboutProps) {
   return (
     <section id="about" className="py-20 bg-slate-50">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid gap-12 lg:grid-cols-2 items-center">
+        <div className={`grid gap-12 ${hasImages ? "lg:grid-cols-2" : "max-w-4xl mx-auto"} items-center`}>
           <div className="space-y-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-primary">
               {section?.title || "Sobre a SM Saúde e Seguros"}
@@ -72,62 +75,58 @@ export function About({ data }: AboutProps) {
             </div>
           </div>
 
-          {/* Image Carousel */}
-          <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-xl shadow-xl lg:order-last bg-slate-200">
-             {images.length > 0 ? (
-               <>
-                 <div
-                   className="flex h-full transition-transform duration-500 ease-in-out"
-                   style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
-                 >
-                   {images.map((img: any) => (
-                      <div key={img.id} className="relative min-w-full h-full">
-                         <Image
-                           src={img.image_url}
-                           alt={img.alt_text || "About Image"}
-                           fill
-                           className="object-cover"
-                         />
-                      </div>
-                   ))}
-                 </div>
+          {/* Image Carousel - Only render if images exist */}
+          {hasImages && (
+            <div className="relative mx-auto aspect-video w-full overflow-hidden rounded-xl shadow-xl lg:order-last bg-slate-200">
+                <>
+                  <div
+                    className="flex h-full transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+                  >
+                    {images.map((img: any) => (
+                        <div key={img.id} className="relative min-w-full h-full">
+                          <Image
+                            src={img.image_url}
+                            alt={img.alt_text || "About Image"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                    ))}
+                  </div>
 
-                 {images.length > 1 && (
-                   <>
-                     <Button
-                       variant="ghost"
-                       size="icon"
-                       className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white rounded-full z-10"
-                       onClick={prevImage}
-                     >
-                       <ChevronLeft className="h-6 w-6" />
-                     </Button>
-                     <Button
-                       variant="ghost"
-                       size="icon"
-                       className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white rounded-full z-10"
-                       onClick={nextImage}
-                     >
-                       <ChevronRight className="h-6 w-6" />
-                     </Button>
-                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                        {images.map((_: any, idx: number) => (
-                            <button
-                                key={idx}
-                                className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? "bg-white w-4" : "bg-white/50"}`}
-                                onClick={() => setCurrentImageIndex(idx)}
-                            />
-                        ))}
-                     </div>
-                   </>
-                 )}
-               </>
-             ) : (
-                <div className="absolute inset-0 bg-slate-200 flex items-center justify-center">
-                    <span className="text-slate-400 font-medium">[Foto dos Sócios / Escritório]</span>
-                </div>
-             )}
-          </div>
+                  {images.length > 1 && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white rounded-full z-10"
+                        onClick={prevImage}
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white rounded-full z-10"
+                        onClick={nextImage}
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </Button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                          {images.map((_: any, idx: number) => (
+                              <button
+                                  key={idx}
+                                  className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? "bg-white w-4" : "bg-white/50"}`}
+                                  onClick={() => setCurrentImageIndex(idx)}
+                              />
+                          ))}
+                      </div>
+                    </>
+                  )}
+                </>
+            </div>
+          )}
         </div>
       </div>
     </section>
