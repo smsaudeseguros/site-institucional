@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export async function getUsers() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Fetch profiles with emails (since profiles is linked to auth.users, but emails are in auth.users)
   // Actually, my profiles table has an 'email' column based on `supabase/cms_schema.sql`
@@ -21,7 +21,7 @@ export async function getUsers() {
 }
 
 export async function getLeadInteractions(leadId: number) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('lead_interactions')
@@ -44,7 +44,7 @@ export async function getLeadInteractions(leadId: number) {
 }
 
 export async function addInteraction(prevState: any, formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const leadId = formData.get('lead_id')
   const userId = formData.get('user_id')

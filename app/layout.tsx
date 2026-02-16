@@ -11,7 +11,7 @@ const josefinSans = Josefin_Sans({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase.from('site_config').select('*').single()
 
   return {

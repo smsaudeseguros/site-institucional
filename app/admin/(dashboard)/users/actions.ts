@@ -9,7 +9,7 @@ export async function createUser(prevState: any, formData: FormData) {
   const password = formData.get("password") as string
   const role = formData.get("role") as string || "editor"
 
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -55,7 +55,7 @@ export async function createUser(prevState: any, formData: FormData) {
 }
 
 export async function deleteUser(userId: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return { error: "Unauthorized" }
