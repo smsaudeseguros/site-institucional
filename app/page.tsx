@@ -10,7 +10,7 @@ import { FloatingWhatsApp } from "@/components/floating-whatsapp"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function Home() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const [
     { data: siteConfig },
