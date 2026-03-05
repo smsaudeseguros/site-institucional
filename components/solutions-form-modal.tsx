@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { maskPhone, maskCNPJ, maskCurrency } from "@/lib/masks"
@@ -19,7 +19,6 @@ interface SolutionsFormModalProps {
 }
 
 export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextForm }: SolutionsFormModalProps) {
-  const [step, setStep] = useState(1)
   const [tipoContratacao, setTipoContratacao] = useState("Individual")
   const [tipoPessoa, setTipoPessoa] = useState("Física")
 
@@ -43,7 +42,6 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
 
   useEffect(() => {
     if (isOpen) {
-      setStep(1)
       setTipoContratacao("Individual")
       setTipoPessoa("Física")
       setFormData({
@@ -152,44 +150,33 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {isPlanoSaude && step === 1 && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Tipo de contratação</Label>
-                <Select value={tipoContratacao} onValueChange={setTipoContratacao}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Individual">Individual</SelectItem>
-                    <SelectItem value="PME / Empresarial">PME / Empresarial (a partir de 2 vidas)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button type="button" onClick={() => setStep(2)} className="w-full bg-brand-gradient hover:opacity-90">Continuar</Button>
+          {isPlanoSaude && (
+            <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-lg border">
+              <Switch
+                id="tipo-contratacao"
+                checked={tipoContratacao === "PME / Empresarial"}
+                onCheckedChange={(checked) => setTipoContratacao(checked ? "PME / Empresarial" : "Individual")}
+              />
+              <Label htmlFor="tipo-contratacao" className="cursor-pointer">
+                Sou PME / Empresarial (a partir de 2 vidas)
+              </Label>
             </div>
           )}
 
-          {isFinanciamento && step === 1 && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Tipo de Pessoa</Label>
-                <Select value={tipoPessoa} onValueChange={setTipoPessoa}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Física">Pessoa Física (PF)</SelectItem>
-                    <SelectItem value="Jurídica">Pessoa Jurídica (PJ)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button type="button" onClick={() => setStep(2)} className="w-full bg-brand-gradient hover:opacity-90">Continuar</Button>
+          {isFinanciamento && (
+            <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-lg border">
+              <Switch
+                id="tipo-pessoa"
+                checked={tipoPessoa === "Jurídica"}
+                onCheckedChange={(checked) => setTipoPessoa(checked ? "Jurídica" : "Física")}
+              />
+              <Label htmlFor="tipo-pessoa" className="cursor-pointer">
+                Sou Pessoa Jurídica (PJ)
+              </Label>
             </div>
           )}
 
-          {((isPlanoSaude && step === 2) || (isFinanciamento && step === 2) || (!isPlanoSaude && !isFinanciamento)) && (
-            <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
                 <div className="space-y-2">
                     <Label>Nome Completo</Label>
                     <Input name="name" value={formData.name} onChange={handleChange} required />
@@ -251,17 +238,11 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
                 )}
 
                 <div className="flex gap-2 pt-2">
-                    {(isPlanoSaude || isFinanciamento) && (
-                        <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/3">
-                            Voltar
-                        </Button>
-                    )}
-                    <Button type="submit" disabled={isSubmitting} className={`bg-brand-gradient hover:opacity-90 text-white ${(isPlanoSaude || isFinanciamento) ? 'w-2/3' : 'w-full'}`}>
+                    <Button type="submit" disabled={isSubmitting} className="w-full bg-brand-gradient hover:opacity-90 text-white">
                         {isSubmitting ? "Enviando..." : buttonTextForm || "Quero receber minha cotação personalizada"}
                     </Button>
                 </div>
             </div>
-          )}
         </form>
       </DialogContent>
     </Dialog>
