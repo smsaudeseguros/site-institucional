@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IconPicker } from "@/components/admin/icon-picker"
 import { toast } from "sonner"
 import { Pencil, Trash, Plus } from "lucide-react"
@@ -19,7 +20,16 @@ export default function SolutionsPage() {
   const [loading, setLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<any>(null)
-  const [formData, setFormData] = useState({ title: "", description: "", icon_name: "", sort_order: 0 })
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    icon_name: "",
+    sort_order: 0,
+    action_type: "form",
+    action_link: "",
+    button_text_card: "Cotar agora",
+    button_text_form: "Quero receber minha cotação personalizada"
+  })
   const supabase = createClient()
 
   useEffect(() => {
@@ -57,13 +67,26 @@ export default function SolutionsPage() {
       setEditingItem(item)
       setFormData({
         title: item.title,
-        description: item.description,
+        description: item.description || "",
         icon_name: item.icon_name,
-        sort_order: item.sort_order
+        sort_order: item.sort_order,
+        action_type: item.action_type || "form",
+        action_link: item.action_link || "",
+        button_text_card: item.button_text_card || "Cotar agora",
+        button_text_form: item.button_text_form || "Quero receber minha cotação personalizada"
       })
     } else {
       setEditingItem(null)
-      setFormData({ title: "", description: "", icon_name: "Shield", sort_order: items.length + 1 })
+      setFormData({
+        title: "",
+        description: "",
+        icon_name: "Shield",
+        sort_order: items.length + 1,
+        action_type: "form",
+        action_link: "",
+        button_text_card: "Cotar agora",
+        button_text_form: "Quero receber minha cotação personalizada"
+      })
     }
     setIsOpen(true)
   }
@@ -191,6 +214,63 @@ export default function SolutionsPage() {
                 onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value)})}
                 />
             </div>
+
+            <div className="pt-4 border-t">
+              <h3 className="text-sm font-medium mb-4">Comportamento do Botão</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Texto do botão no Card</Label>
+                  <Input
+                    value={formData.button_text_card}
+                    onChange={(e) => setFormData({...formData, button_text_card: e.target.value})}
+                    placeholder="Ex: Cotar agora"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Ação ao clicar</Label>
+                  <Select
+                    value={formData.action_type}
+                    onValueChange={(value) => setFormData({...formData, action_type: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a ação" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="form">Abrir Formulário</SelectItem>
+                      <SelectItem value="link">Redirecionar para Link</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {formData.action_type === 'link' && (
+                  <div className="space-y-2">
+                    <Label>Link de Redirecionamento</Label>
+                    <Input
+                      type="url"
+                      value={formData.action_link}
+                      onChange={(e) => setFormData({...formData, action_link: e.target.value})}
+                      placeholder="https://..."
+                      required={formData.action_type === 'link'}
+                    />
+                  </div>
+                )}
+
+                {formData.action_type === 'form' && (
+                  <div className="space-y-2">
+                    <Label>Texto do botão de enviar (dentro do formulário)</Label>
+                    <Input
+                      value={formData.button_text_form}
+                      onChange={(e) => setFormData({...formData, button_text_form: e.target.value})}
+                      placeholder="Ex: Quero receber minha cotação personalizada"
+                      required={formData.action_type === 'form'}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
             <Button type="submit" className="w-full">Salvar</Button>
             </form>
         </DialogContent>

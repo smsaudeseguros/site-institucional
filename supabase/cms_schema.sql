@@ -78,6 +78,10 @@ CREATE TABLE IF NOT EXISTS solutions (
   description TEXT,
   icon_name TEXT NOT NULL,
   sort_order INTEGER DEFAULT 0,
+  action_type TEXT DEFAULT 'form',
+  action_link TEXT,
+  button_text_card TEXT DEFAULT 'Cotar agora',
+  button_text_form TEXT DEFAULT 'Quero receber minha cotação personalizada',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -155,6 +159,7 @@ CREATE TABLE IF NOT EXISTS leads (
   phone TEXT NOT NULL,
   interest TEXT,
   message TEXT,
+  metadata JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

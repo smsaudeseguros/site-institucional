@@ -1,4 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { SolutionsFormModal } from "@/components/solutions-form-modal"
 import * as Icons from "lucide-react"
 
 interface ServicesProps {
@@ -7,6 +12,18 @@ interface ServicesProps {
 
 export function Services({ data }: ServicesProps) {
   const services = data || []
+
+  const [selectedService, setSelectedService] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleActionClick = (service: any) => {
+    if (service.action_type === 'link' && service.action_link) {
+      window.open(service.action_link, '_blank', 'noopener,noreferrer')
+    } else {
+      setSelectedService(service)
+      setIsModalOpen(true)
+    }
+  }
 
   return (
     <section id="services" className="py-20 bg-white">
@@ -32,16 +49,33 @@ export function Services({ data }: ServicesProps) {
                     </div>
                     <CardTitle>{service.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <CardDescription className="text-base text-slate-600">
                       {service.description}
                     </CardDescription>
                   </CardContent>
+                  <CardFooter className="pt-4 mt-auto border-t">
+                    <Button
+                      className="w-full bg-brand-gradient hover:opacity-90 text-white"
+                      onClick={() => handleActionClick(service)}
+                    >
+                      {service.button_text_card || "Cotar agora"}
+                    </Button>
+                  </CardFooter>
                 </Card>
              )
           })}
         </div>
       </div>
+
+      {selectedService && (
+        <SolutionsFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          serviceTitle={selectedService.title}
+          buttonTextForm={selectedService.button_text_form}
+        />
+      )}
     </section>
   )
 }

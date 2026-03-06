@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
+import { triggerWebhook } from "@/lib/webhook"
 import { Mail, MapPin, Phone, Send } from "lucide-react"
 import * as React from "react"
 import { toast } from "sonner"
@@ -43,11 +44,14 @@ export function Contact({ data }: ContactProps) {
     }
 
     try {
-      const { error } = await supabase.from('leads').insert([submissionData])
+      const { data: insertedLead, error } = await supabase.from('leads').insert([submissionData]).select().single()
       if (error) throw error
 
       setSubmitted(true)
       toast.success("Mensagem enviada com sucesso!")
+
+      // Fire webhook asynchronously
+      triggerWebhook(insertedLead)
     } catch (error) {
       console.error("Error submitting form:", error)
       toast.error("Ocorreu um erro ao enviar. Tente novamente.")

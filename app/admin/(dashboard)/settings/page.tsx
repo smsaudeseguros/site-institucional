@@ -11,11 +11,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { ImageUpload } from "@/components/admin/image-upload"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { History, CheckCircle2, XCircle } from "lucide-react"
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [data, setData] = useState<any>({})
+
+  // Logs state
+  const [logs, setLogs] = useState<any[]>([])
+  const [isLogsOpen, setIsLogsOpen] = useState(false)
+  const [selectedLog, setSelectedLog] = useState<any>(null)
+  const [loadingLogs, setLoadingLogs] = useState(false)
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -68,6 +78,30 @@ export default function SettingsPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const fetchLogs = async () => {
+    setLoadingLogs(true)
+    try {
+      const { data, error } = await supabase
+        .from('webhook_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+
+      if (error) throw error
+      setLogs(data || [])
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao carregar logs")
+    } finally {
+      setLoadingLogs(false)
+    }
+  }
+
+  const handleOpenLogs = () => {
+    setIsLogsOpen(true)
+    fetchLogs()
   }
 
   const handleChange = (key: string, value: string) => {
@@ -202,10 +236,131 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle>Integrações</CardTitle>
+            <CardDescription>Conecte o sistema a outras ferramentas.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+              <div className="space-y-2">
+                  <Label>URL do Webhook (n8n, Zapier, etc.)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="https://sua-url-do-webhook.com"
+                      value={data.webhook_n8n_url || ''}
+                      onChange={(e) => handleChange('webhook_n8n_url', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button type="button" variant="outline" onClick={handleOpenLogs} title="Histórico de Logs">
+                      <History className="h-4 w-4 mr-2" /> Logs
+                    </Button>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Sempre que um novo Lead for capturado, o sistema enviará um POST com os dados do Lead para esta URL.
+                  </p>
+                </div>
+          </CardContent>
+        </Card>
+
         <Button type="submit" disabled={saving}>
           {saving ? "Salvando..." : "Salvar Alterações"}
         </Button>
       </form>
+
+      {/* Webhook Logs Dialog */}
+      <Dialog open={isLogsOpen} onOpenChange={setIsLogsOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Histórico de Webhooks</DialogTitle>
+            <DialogDescription>
+              Últimos envios para o webhook configurado (máx 100).
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 flex-1">
+            {loadingLogs ? (
+              <p className="text-center text-slate-500 py-4">Carregando logs...</p>
+            ) : logs.length === 0 ? (
+              <p className="text-center text-slate-500 py-4">Nenhum log encontrado.</p>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Data / Hora</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Ação</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {logs.map((log) => (
+                        <TableRow key={log.id}>
+                          <TableCell className="font-medium text-xs">
+                            {new Date(log.created_at).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            {log.response_status >= 200 && log.response_status < 300 ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                                  <CheckCircle2 className="h-3 w-3" /> {log.response_status}
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
+                                  <XCircle className="h-3 w-3" /> {log.response_status === 0 ? 'Erro' : log.response_status}
+                                </span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedLog(selectedLog?.id === log.id ? null : log)}>
+                              {selectedLog?.id === log.id ? 'Ocultar Detalhes' : 'Ver Detalhes'}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {selectedLog && (
+                  <div className="bg-slate-50 p-4 rounded-lg border space-y-4 animate-in fade-in zoom-in-95">
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-semibold text-sm">Detalhes do Envio</h4>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedLog(null)}><XCircle className="h-4 w-4"/></Button>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label className="text-xs text-gray-500 uppercase">URL de Destino</Label>
+                        <div className="bg-white p-2 rounded border text-xs break-all text-slate-700">
+                            {selectedLog.url}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-xs text-gray-500 uppercase">Request Body (Enviado)</Label>
+                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[300px]">
+                                {JSON.stringify(selectedLog.request_body, null, 2)}
+                            </pre>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-xs text-gray-500 uppercase">Response Headers</Label>
+                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
+                                {JSON.stringify(selectedLog.response_headers, null, 2) || "Nenhum header retornado"}
+                            </pre>
+
+                            <Label className="text-xs text-gray-500 uppercase mt-4 block">Response Body (Recebido)</Label>
+                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
+                                {selectedLog.response_body || "Nenhum body retornado"}
+                            </pre>
+                        </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

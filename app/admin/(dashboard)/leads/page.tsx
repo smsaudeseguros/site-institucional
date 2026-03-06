@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
-import { Mail, Phone, MessageCircle, History, UserCheck, Clock } from "lucide-react"
+import { Mail, Phone, MessageCircle, History, UserCheck, Clock, Eye } from "lucide-react"
 import { getUsers, getLeadInteractions, addInteraction } from "./actions"
 
 export default function LeadsPage() {
@@ -23,6 +23,7 @@ export default function LeadsPage() {
   const [interactions, setInteractions] = useState<any[]>([])
   const [isInteractionOpen, setIsInteractionOpen] = useState(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
   const supabase = createClient()
 
@@ -73,6 +74,11 @@ export default function LeadsPage() {
     setIsHistoryOpen(true)
     const data = await getLeadInteractions(lead.id)
     setInteractions(data)
+  }
+
+  const handleOpenDetails = (lead: any) => {
+    setSelectedLead(lead)
+    setIsDetailsOpen(true)
   }
 
   const handleInteractionSubmit = async (formData: FormData) => {
@@ -145,6 +151,9 @@ export default function LeadsPage() {
                     )}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
+                    <Button variant="ghost" size="icon" title="Ver Detalhes" onClick={() => handleOpenDetails(lead)}>
+                      <Eye className="h-4 w-4 text-slate-600" />
+                    </Button>
                     <Button variant="ghost" size="icon" title="Registrar Atendimento" onClick={() => handleOpenInteraction(lead)}>
                       <UserCheck className="h-4 w-4 text-blue-600" />
                     </Button>
@@ -203,6 +212,9 @@ export default function LeadsPage() {
               </div>
 
               <div className="flex gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={() => handleOpenDetails(lead)}>
+                    <Eye className="h-4 w-4 mr-2" /> Detalhes
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => handleOpenInteraction(lead)}>
                     <UserCheck className="h-4 w-4 mr-2" /> Atender
                   </Button>
@@ -219,6 +231,69 @@ export default function LeadsPage() {
           )
         })}
       </div>
+
+      {/* Lead Details Dialog */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Lead</DialogTitle>
+            <DialogDescription>
+              Informações completas enviadas pelo usuário.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedLead && (
+            <div className="space-y-6 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border">
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase">Nome</Label>
+                  <p className="font-medium text-sm">{selectedLead.name}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase">Data</Label>
+                  <p className="font-medium text-sm">{new Date(selectedLead.created_at).toLocaleString()}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase">E-mail</Label>
+                  <p className="font-medium text-sm">{selectedLead.email}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase">Telefone</Label>
+                  <p className="font-medium text-sm">{selectedLead.phone}</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase">Interesse</Label>
+                  <p className="font-medium text-sm">{selectedLead.interest}</p>
+                </div>
+              </div>
+
+              {selectedLead.message && (
+                 <div>
+                    <Label className="text-xs text-gray-500 uppercase">Mensagem Adicional</Label>
+                    <div className="bg-slate-50 p-3 rounded-lg border text-sm mt-1 whitespace-pre-wrap">
+                      {selectedLead.message}
+                    </div>
+                 </div>
+              )}
+
+              {selectedLead.metadata && Object.keys(selectedLead.metadata).length > 0 && (
+                <div>
+                  <Label className="text-xs text-gray-500 uppercase mb-2 block">Informações Específicas (Metadata)</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                    {Object.entries(selectedLead.metadata).map(([key, value]) => (
+                      <div key={key}>
+                        <Label className="text-xs text-gray-500 uppercase">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </Label>
+                        <p className="font-medium text-sm">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Register Interaction Dialog */}
       <Dialog open={isInteractionOpen} onOpenChange={setIsInteractionOpen}>

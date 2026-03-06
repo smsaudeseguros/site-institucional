@@ -59,7 +59,7 @@ export function Header({
     { label: "Sobre", url: "#about" },
     { label: "Serviços", url: "#services" },
     { label: "Depoimentos", url: "#testimonials" },
-    { label: "FAQ", url: "#faq" },
+    { label: "Perguntas Frequentes", url: "#faq" },
   ]
 
   const items = (menuItems && menuItems.length > 0) ? menuItems : defaultItems
@@ -98,11 +98,6 @@ export function Header({
                 {item.label}
               </Link>
             ))}
-             <Button asChild variant="outline" className="border-primary text-primary hover:bg-green-50">
-              <Link href={AGGER_SYSTEM_URL} target="_blank" rel="noopener noreferrer">
-                Área do Cliente
-              </Link>
-            </Button>
             <Button asChild>
               <Link href={ctaLink || "#contact"}>{ctaText || "Cotar Agora"}</Link>
             </Button>
@@ -138,11 +133,6 @@ export function Header({
               </Link>
             ))}
             <div className="flex flex-col gap-2 mt-2">
-              <Button asChild variant="outline" className="w-full border-primary text-primary hover:bg-green-50">
-                <Link href={AGGER_SYSTEM_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)}>
-                  Área do Cliente
-                </Link>
-              </Button>
                <Button asChild className="w-full">
                 <Link href={ctaLink || "#contact"} onClick={() => setIsMenuOpen(false)}>{ctaText || "Cotar Agora"}</Link>
               </Button>
