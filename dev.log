@@ -12,3 +12,5 @@
  GET / 200 in 662ms (compile: 9ms, proxy.ts: 10ms, render: 643ms)
  GET / 200 in 850ms (compile: 6ms, proxy.ts: 9ms, render: 835ms)
  GET / 200 in 682ms (compile: 5ms, proxy.ts: 8ms, render: 669ms)
+ GET / 200 in 4.3s (compile: 1250ms, proxy.ts: 67ms, render: 3.0s)
+ GET / 200 in 795ms (compile: 8ms, proxy.ts: 9ms, render: 779ms)

@@ -12,15 +12,17 @@ interface FloatingWhatsAppProps {
 }
 
 export function FloatingWhatsApp({ data }: FloatingWhatsAppProps) {
+  const [isOpen, setIsOpen] = React.useState(false)
+
   const whatsappMatheus = data?.contact_whatsapp_matheus || "https://wa.me/5515991849321"
   const whatsappSilvio = data?.contact_whatsapp_silvio || "https://wa.me/5511992668941"
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <Popover>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <button
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 animate-bounce"
+            className={`flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 ${!isOpen ? "animate-bounce" : ""}`}
             aria-label="Fale conosco no WhatsApp"
           >
             <Phone className="h-7 w-7" />
