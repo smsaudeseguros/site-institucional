@@ -22,6 +22,7 @@ interface SolutionsFormModalProps {
 
 export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextForm, pjCheckboxText = "Tenho CNPJ" }: SolutionsFormModalProps) {
   const [isPJ, setIsPJ] = useState(false)
+  const [possuiPlanoAtivo, setPossuiPlanoAtivo] = useState(false)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +30,9 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
     phone: "",
     cnpj: "",
     vidas: "",
+    cidade: "",
+    idade: "",
+    profissao: "",
     valorEntrada: "",
     valorVeiculo: "",
     modeloVeiculo: "",
@@ -44,8 +48,9 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
   useEffect(() => {
     if (isOpen) {
       setIsPJ(false)
+      setPossuiPlanoAtivo(false)
       setFormData({
-        name: "", email: "", phone: "", cnpj: "", vidas: "",
+        name: "", email: "", phone: "", cnpj: "", vidas: "", cidade: "", idade: "", profissao: "",
         valorEntrada: "", valorVeiculo: "", modeloVeiculo: "", anoVeiculo: ""
       })
       setIsSuccess(false)
@@ -89,6 +94,7 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
 
     if (isPlanoSaude) {
         metadata.tipoContratacao = isPJ ? "PME / Empresarial" : "Individual"
+        metadata.possuiPlanoAtivo = possuiPlanoAtivo ? "Sim" : "Não"
         if (isPJ) {
             metadata.vidas = parseInt(formData.vidas) || 0
             if (metadata.vidas >= 2 && metadata.vidas <= 99) {
@@ -96,6 +102,10 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
             } else if (metadata.vidas >= 100) {
                 metadata.classificacao = "Empresarial"
             }
+        } else {
+            metadata.cidade = formData.cidade
+            metadata.idade = parseInt(formData.idade) || 0
+            metadata.profissao = formData.profissao
         }
     } else if (isFinanciamento) {
         metadata.tipoPessoa = isPJ ? "Jurídica" : "Física"
@@ -173,19 +183,40 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
                     </div>
                 </div>
 
+                {isPlanoSaude && (
+                  <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border mt-2">
+                    <Label htmlFor="possui-plano-ativo" className="text-sm font-medium leading-none cursor-pointer">
+                      Possui plano ativo?
+                    </Label>
+                    <div className="flex items-center space-x-2">
+                      <Label htmlFor="possui-plano-ativo" className="text-sm text-slate-500 cursor-pointer">Não</Label>
+                      <Switch
+                        id="possui-plano-ativo"
+                        checked={possuiPlanoAtivo}
+                        onCheckedChange={(checked) => setPossuiPlanoAtivo(checked)}
+                      />
+                      <Label htmlFor="possui-plano-ativo" className="text-sm text-slate-500 cursor-pointer">Sim</Label>
+                    </div>
+                  </div>
+                )}
+
                 {/* Unified PJ Switch for any form solution */}
-                <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-lg border mt-2">
-                  <Switch
-                    id="is-pj"
-                    checked={isPJ}
-                    onCheckedChange={(checked) => setIsPJ(checked)}
-                  />
-                  <Label htmlFor="is-pj" className="cursor-pointer">
+                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border mt-2">
+                  <Label htmlFor="is-pj" className="text-sm font-medium leading-none cursor-pointer">
                     {pjCheckboxText}
                   </Label>
+                  <div className="flex items-center space-x-2">
+                    <Label htmlFor="is-pj" className="text-sm text-slate-500 cursor-pointer">Não</Label>
+                    <Switch
+                      id="is-pj"
+                      checked={isPJ}
+                      onCheckedChange={(checked) => setIsPJ(checked)}
+                    />
+                    <Label htmlFor="is-pj" className="text-sm text-slate-500 cursor-pointer">Sim</Label>
+                  </div>
                 </div>
 
-                {isPJ && (
+                {isPJ ? (
                   <div className={`grid grid-cols-1 ${isPlanoSaude ? 'md:grid-cols-2' : ''} gap-4 animate-in fade-in slide-in-from-top-2 mt-4`}>
                     <div className="space-y-2">
                         <Label>CNPJ</Label>
@@ -198,7 +229,22 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
                       </div>
                     )}
                   </div>
-                )}
+                ) : isPlanoSaude ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 mt-4">
+                    <div className="space-y-2">
+                      <Label>Cidade</Label>
+                      <Input name="cidade" value={formData.cidade} onChange={handleChange} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Idade</Label>
+                      <Input type="number" name="idade" value={formData.idade} onChange={handleChange} min="0" required />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Profissão</Label>
+                      <Input name="profissao" value={formData.profissao} onChange={handleChange} required />
+                    </div>
+                  </div>
+                ) : null}
 
                 {isFinanciamento && (
                     <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mt-4">
