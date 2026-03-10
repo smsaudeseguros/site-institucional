@@ -183,33 +183,37 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
                     </div>
                 </div>
 
-                {/* Unified PJ Switch for any form solution */}
                 {isPlanoSaude && (
-                  <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-lg border mt-2">
-                    <Label htmlFor="possui-plano-ativo" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
-                      Possui plano ativo? Não
+                  <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border mt-2">
+                    <Label htmlFor="possui-plano-ativo" className="text-sm font-medium leading-none cursor-pointer">
+                      Possui plano ativo?
                     </Label>
-                    <Switch
-                      id="possui-plano-ativo"
-                      checked={possuiPlanoAtivo}
-                      onCheckedChange={(checked) => setPossuiPlanoAtivo(checked)}
-                    />
-                    <Label htmlFor="possui-plano-ativo" className="cursor-pointer">
-                      Sim
-                    </Label>
+                    <div className="flex items-center space-x-2">
+                      <Label htmlFor="possui-plano-ativo" className="text-sm text-slate-500 cursor-pointer">Não</Label>
+                      <Switch
+                        id="possui-plano-ativo"
+                        checked={possuiPlanoAtivo}
+                        onCheckedChange={(checked) => setPossuiPlanoAtivo(checked)}
+                      />
+                      <Label htmlFor="possui-plano-ativo" className="text-sm text-slate-500 cursor-pointer">Sim</Label>
+                    </div>
                   </div>
                 )}
 
                 {/* Unified PJ Switch for any form solution */}
-                <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-lg border mt-2">
-                  <Switch
-                    id="is-pj"
-                    checked={isPJ}
-                    onCheckedChange={(checked) => setIsPJ(checked)}
-                  />
-                  <Label htmlFor="is-pj" className="cursor-pointer">
+                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border mt-2">
+                  <Label htmlFor="is-pj" className="text-sm font-medium leading-none cursor-pointer">
                     {pjCheckboxText}
                   </Label>
+                  <div className="flex items-center space-x-2">
+                    <Label htmlFor="is-pj" className="text-sm text-slate-500 cursor-pointer">Não</Label>
+                    <Switch
+                      id="is-pj"
+                      checked={isPJ}
+                      onCheckedChange={(checked) => setIsPJ(checked)}
+                    />
+                    <Label htmlFor="is-pj" className="text-sm text-slate-500 cursor-pointer">Sim</Label>
+                  </div>
                 </div>
 
                 {isPJ ? (
