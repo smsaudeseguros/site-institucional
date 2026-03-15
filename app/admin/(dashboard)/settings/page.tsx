@@ -118,7 +118,7 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Identidade Visual</CardTitle>
-            <CardDescription>Logo e informações gerais</CardDescription>
+            <CardDescription>Logo, Favicon e informações gerais</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -127,6 +127,16 @@ export default function SettingsPage() {
                 value={data.logo_url}
                 onChange={(url) => handleChange('logo_url', url)}
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Favicon (Ícone da Aba)</Label>
+              <ImageUpload
+                value={data.favicon_url}
+                onChange={(url) => handleChange('favicon_url', url)}
+              />
+              <p className="text-xs text-slate-500">
+                Se nenhum favicon for enviado, o logotipo principal será utilizado automaticamente e centralizado.
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Texto do Rodapé</Label>
