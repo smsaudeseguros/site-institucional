@@ -17,8 +17,8 @@ export default async function Icon() {
   }
 
   // Ensure strings are not empty before fallback
-  const favicon = data?.favicon_url?.trim()
-  const logo = data?.logo_url?.trim()
+  const favicon = data?.favicon_url ? data.favicon_url.trim() : null;
+  const logo = data?.logo_url ? data.logo_url.trim() : null;
   const imageUrl = favicon || logo || 'https://ibb.co/dwVXMpFB' // Default logo fallback for absolute url
 
   return new ImageResponse(
