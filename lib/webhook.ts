@@ -1,4 +1,4 @@
-import { createClient } from "./supabase/client"
+import { createAdminClient } from "./supabase/admin"
 
 /**
  * Triggers the n8n webhook asynchronously if configured in `site_config`.
@@ -7,10 +7,10 @@ import { createClient } from "./supabase/client"
  */
 export async function triggerWebhook(leadData: any) {
     try {
-        const supabase = createClient()
+        const supabaseAdmin = createAdminClient()
 
         // Fetch webhook URL from site_config
-        const { data: config, error } = await supabase
+        const { data: config, error } = await supabaseAdmin
             .from('site_config')
             .select('webhook_n8n_url')
             .eq('id', 1)
@@ -49,7 +49,7 @@ export async function triggerWebhook(leadData: any) {
             }
 
             // Log success to DB
-            await supabase.from('webhook_logs').insert({
+            await supabaseAdmin.from('webhook_logs').insert({
                 url,
                 request_body: leadData,
                 response_status: response.status,
@@ -61,7 +61,7 @@ export async function triggerWebhook(leadData: any) {
             console.error("Failed to send webhook to n8n:", fetchErr)
 
             // Log network failure to DB
-            await supabase.from('webhook_logs').insert({
+            await supabaseAdmin.from('webhook_logs').insert({
                 url,
                 request_body: leadData,
                 response_status: 0,
