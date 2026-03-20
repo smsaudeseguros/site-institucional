@@ -22,9 +22,13 @@ export default function SettingsPage() {
 
   // Logs state
   const [logs, setLogs] = useState<any[]>([])
+  const [systemLogs, setSystemLogs] = useState<any[]>([])
   const [isLogsOpen, setIsLogsOpen] = useState(false)
+  const [isSystemLogsOpen, setIsSystemLogsOpen] = useState(false)
   const [selectedLog, setSelectedLog] = useState<any>(null)
+  const [selectedSystemLog, setSelectedSystemLog] = useState<any>(null)
   const [loadingLogs, setLoadingLogs] = useState(false)
+  const [loadingSystemLogs, setLoadingSystemLogs] = useState(false)
 
   const supabase = createClient()
 
@@ -93,15 +97,39 @@ export default function SettingsPage() {
       setLogs(data || [])
     } catch (error) {
       console.error(error)
-      toast.error("Erro ao carregar logs")
+      toast.error("Erro ao carregar logs de webhook")
     } finally {
       setLoadingLogs(false)
+    }
+  }
+
+  const fetchSystemLogs = async () => {
+    setLoadingSystemLogs(true)
+    try {
+      const { data, error } = await supabase
+        .from('system_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(150)
+
+      if (error) throw error
+      setSystemLogs(data || [])
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao carregar logs do sistema")
+    } finally {
+      setLoadingSystemLogs(false)
     }
   }
 
   const handleOpenLogs = () => {
     setIsLogsOpen(true)
     fetchLogs()
+  }
+
+  const handleOpenSystemLogs = () => {
+    setIsSystemLogsOpen(true)
+    fetchSystemLogs()
   }
 
   const handleChange = (key: string, value: string) => {
@@ -262,7 +290,7 @@ export default function SettingsPage() {
                       className="flex-1"
                     />
                     <Button type="button" variant="outline" onClick={handleOpenLogs} title="Histórico de Logs">
-                      <History className="h-4 w-4 mr-2" /> Logs
+                      <History className="h-4 w-4 mr-2" /> Webhook Logs
                     </Button>
                   </div>
                   <p className="text-xs text-slate-500">
@@ -272,10 +300,113 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle>Logs do Sistema</CardTitle>
+            <CardDescription>Visualize o histórico de submissões de formulário e erros internos do sistema.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button type="button" variant="outline" onClick={handleOpenSystemLogs} className="w-full sm:w-auto">
+              <History className="h-4 w-4 mr-2" /> Visualizar Logs do Sistema
+            </Button>
+          </CardContent>
+        </Card>
+
         <Button type="submit" disabled={saving}>
           {saving ? "Salvando..." : "Salvar Alterações"}
         </Button>
       </form>
+
+      {/* System Logs Dialog */}
+      <Dialog open={isSystemLogsOpen} onOpenChange={setIsSystemLogsOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Logs do Sistema</DialogTitle>
+            <DialogDescription>
+              Últimos eventos e falhas internas registrados (máx 150).
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 flex-1">
+            {loadingSystemLogs ? (
+              <p className="text-center text-slate-500 py-4">Carregando logs...</p>
+            ) : systemLogs.length === 0 ? (
+              <p className="text-center text-slate-500 py-4">Nenhum log encontrado.</p>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Data / Hora</TableHead>
+                        <TableHead>Evento</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Ação</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {systemLogs.map((log) => (
+                        <TableRow key={log.id}>
+                          <TableCell className="font-medium text-xs">
+                            {new Date(log.created_at).toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {log.event_type}
+                          </TableCell>
+                          <TableCell>
+                            {log.status === 'SUCCESS' ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                                  <CheckCircle2 className="h-3 w-3" /> Sucesso
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
+                                  <XCircle className="h-3 w-3" /> Erro
+                                </span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedSystemLog(log)}>
+                              Ver Detalhes
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* System Log Details Secondary Dialog */}
+      <Dialog open={!!selectedSystemLog} onOpenChange={(open) => !open && setSelectedSystemLog(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+           <DialogHeader>
+             <DialogTitle>Detalhes do Evento</DialogTitle>
+             <DialogDescription>
+               Inspecione os dados submetidos e possíveis mensagens de erro.
+             </DialogDescription>
+           </DialogHeader>
+           {selectedSystemLog && (
+             <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                    <Label className="text-xs text-gray-500 uppercase">Payload</Label>
+                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[400px] shadow-inner">
+                        {JSON.stringify(selectedSystemLog.payload, null, 2) || "Nenhum payload"}
+                    </pre>
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-xs text-gray-500 uppercase">Mensagem de Erro</Label>
+                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                        {selectedSystemLog.error_message || "Nenhum erro registrado"}
+                    </pre>
+                </div>
+             </div>
+           )}
+        </DialogContent>
+      </Dialog>
 
       {/* Webhook Logs Dialog */}
       <Dialog open={isLogsOpen} onOpenChange={setIsLogsOpen}>
@@ -321,8 +452,8 @@ export default function SettingsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Button variant="ghost" size="sm" onClick={() => setSelectedLog(selectedLog?.id === log.id ? null : log)}>
-                              {selectedLog?.id === log.id ? 'Ocultar Detalhes' : 'Ver Detalhes'}
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedLog(log)}>
+                              Ver Detalhes
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -330,47 +461,51 @@ export default function SettingsPage() {
                     </TableBody>
                   </Table>
                 </div>
-
-                {selectedLog && (
-                  <div className="bg-slate-50 p-4 rounded-lg border space-y-4 animate-in fade-in zoom-in-95">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-semibold text-sm">Detalhes do Envio</h4>
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedLog(null)}><XCircle className="h-4 w-4"/></Button>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label className="text-xs text-gray-500 uppercase">URL de Destino</Label>
-                        <div className="bg-white p-2 rounded border text-xs break-all text-slate-700">
-                            {selectedLog.url}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Request Body (Enviado)</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[300px]">
-                                {JSON.stringify(selectedLog.request_body, null, 2)}
-                            </pre>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Response Headers</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
-                                {JSON.stringify(selectedLog.response_headers, null, 2) || "Nenhum header retornado"}
-                            </pre>
-
-                            <Label className="text-xs text-gray-500 uppercase mt-4 block">Response Body (Recebido)</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
-                                {selectedLog.response_body || "Nenhum body retornado"}
-                            </pre>
-                        </div>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Webhook Log Details Secondary Dialog */}
+      <Dialog open={!!selectedLog} onOpenChange={(open) => !open && setSelectedLog(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Envio (Webhook)</DialogTitle>
+          </DialogHeader>
+
+          {selectedLog && (
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">URL de Destino</Label>
+                  <div className="bg-slate-50 p-3 rounded-lg border text-xs break-all text-slate-700 font-mono">
+                      {selectedLog.url}
+                  </div>
+              </div>
+
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Request Body (Enviado)</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[300px] shadow-inner">
+                      {JSON.stringify(selectedLog.request_body, null, 2)}
+                  </pre>
+              </div>
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Response Headers</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                      {JSON.stringify(selectedLog.response_headers, null, 2) || "Nenhum header retornado"}
+                  </pre>
+              </div>
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Response Body (Recebido)</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                      {selectedLog.response_body || "Nenhum body retornado"}
+                  </pre>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
