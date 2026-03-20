@@ -365,8 +365,8 @@ export default function SettingsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Button variant="ghost" size="sm" onClick={() => setSelectedSystemLog(selectedSystemLog?.id === log.id ? null : log)}>
-                              {selectedSystemLog?.id === log.id ? 'Ocultar Detalhes' : 'Ver Detalhes'}
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedSystemLog(log)}>
+                              Ver Detalhes
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -374,33 +374,37 @@ export default function SettingsPage() {
                     </TableBody>
                   </Table>
                 </div>
-
-                {selectedSystemLog && (
-                  <div className="bg-slate-50 p-4 rounded-lg border space-y-4 animate-in fade-in zoom-in-95">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-semibold text-sm">Detalhes do Evento</h4>
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedSystemLog(null)}><XCircle className="h-4 w-4"/></Button>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Payload</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[300px]">
-                                {JSON.stringify(selectedSystemLog.payload, null, 2) || "Nenhum payload"}
-                            </pre>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Mensagem de Erro</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
-                                {selectedSystemLog.error_message || "Nenhum erro registrado"}
-                            </pre>
-                        </div>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* System Log Details Secondary Dialog */}
+      <Dialog open={!!selectedSystemLog} onOpenChange={(open) => !open && setSelectedSystemLog(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+           <DialogHeader>
+             <DialogTitle>Detalhes do Evento</DialogTitle>
+             <DialogDescription>
+               Inspecione os dados submetidos e possíveis mensagens de erro.
+             </DialogDescription>
+           </DialogHeader>
+           {selectedSystemLog && (
+             <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                    <Label className="text-xs text-gray-500 uppercase">Payload</Label>
+                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[400px] shadow-inner">
+                        {JSON.stringify(selectedSystemLog.payload, null, 2) || "Nenhum payload"}
+                    </pre>
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-xs text-gray-500 uppercase">Mensagem de Erro</Label>
+                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                        {selectedSystemLog.error_message || "Nenhum erro registrado"}
+                    </pre>
+                </div>
+             </div>
+           )}
         </DialogContent>
       </Dialog>
 
@@ -448,8 +452,8 @@ export default function SettingsPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Button variant="ghost" size="sm" onClick={() => setSelectedLog(selectedLog?.id === log.id ? null : log)}>
-                              {selectedLog?.id === log.id ? 'Ocultar Detalhes' : 'Ver Detalhes'}
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedLog(log)}>
+                              Ver Detalhes
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -457,47 +461,51 @@ export default function SettingsPage() {
                     </TableBody>
                   </Table>
                 </div>
-
-                {selectedLog && (
-                  <div className="bg-slate-50 p-4 rounded-lg border space-y-4 animate-in fade-in zoom-in-95">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-semibold text-sm">Detalhes do Envio</h4>
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedLog(null)}><XCircle className="h-4 w-4"/></Button>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label className="text-xs text-gray-500 uppercase">URL de Destino</Label>
-                        <div className="bg-white p-2 rounded border text-xs break-all text-slate-700">
-                            {selectedLog.url}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Request Body (Enviado)</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[300px]">
-                                {JSON.stringify(selectedLog.request_body, null, 2)}
-                            </pre>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-xs text-gray-500 uppercase">Response Headers</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
-                                {JSON.stringify(selectedLog.response_headers, null, 2) || "Nenhum header retornado"}
-                            </pre>
-
-                            <Label className="text-xs text-gray-500 uppercase mt-4 block">Response Body (Recebido)</Label>
-                            <pre className="bg-slate-900 text-slate-50 p-3 rounded border text-xs overflow-auto max-h-[150px]">
-                                {selectedLog.response_body || "Nenhum body retornado"}
-                            </pre>
-                        </div>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Webhook Log Details Secondary Dialog */}
+      <Dialog open={!!selectedLog} onOpenChange={(open) => !open && setSelectedLog(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Envio (Webhook)</DialogTitle>
+          </DialogHeader>
+
+          {selectedLog && (
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">URL de Destino</Label>
+                  <div className="bg-slate-50 p-3 rounded-lg border text-xs break-all text-slate-700 font-mono">
+                      {selectedLog.url}
+                  </div>
+              </div>
+
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Request Body (Enviado)</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[300px] shadow-inner">
+                      {JSON.stringify(selectedLog.request_body, null, 2)}
+                  </pre>
+              </div>
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Response Headers</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                      {JSON.stringify(selectedLog.response_headers, null, 2) || "Nenhum header retornado"}
+                  </pre>
+              </div>
+              <div className="space-y-2">
+                  <Label className="text-xs text-gray-500 uppercase">Response Body (Recebido)</Label>
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg border text-xs overflow-auto max-h-[200px] shadow-inner">
+                      {selectedLog.response_body || "Nenhum body retornado"}
+                  </pre>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }

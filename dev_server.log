@@ -1,14 +1,34 @@
 
-> sm-saude-seguros@0.1.0 start
-> next start
+> sm-saude-seguros@0.1.0 dev
+> next dev
 
-⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3001
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3001)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '::',
-  port: 3001
-}
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 4.1s
+ GET /admin/login 200 in 3.2s (compile: 2.0s, proxy.ts: 26ms, render: 1139ms)
+ GET /admin 200 in 958ms (compile: 276ms, proxy.ts: 180ms, render: 502ms)
+ GET /admin 200 in 434ms (compile: 18ms, proxy.ts: 180ms, render: 235ms)
+ GET /admin/settings 200 in 893ms (compile: 172ms, proxy.ts: 114ms, render: 606ms)
+ GET /admin/login 200 in 461ms (compile: 7ms, proxy.ts: 11ms, render: 443ms)
+ GET /admin 200 in 424ms (compile: 5ms, proxy.ts: 129ms, render: 290ms)
+ GET /admin 200 in 426ms (compile: 11ms, proxy.ts: 196ms, render: 219ms)
+ GET /admin/settings 200 in 447ms (compile: 5ms, proxy.ts: 126ms, render: 315ms)
+ GET /admin/login 200 in 377ms (compile: 5ms, proxy.ts: 8ms, render: 363ms)
+ GET /admin 200 in 413ms (compile: 5ms, proxy.ts: 116ms, render: 293ms)
+ GET /admin 200 in 356ms (compile: 16ms, proxy.ts: 173ms, render: 167ms)
+ GET /admin/settings 200 in 431ms (compile: 20ms, proxy.ts: 119ms, render: 292ms)
+ GET /admin/login 200 in 361ms (compile: 8ms, proxy.ts: 8ms, render: 346ms)
+ GET /admin 200 in 374ms (compile: 7ms, proxy.ts: 111ms, render: 256ms)
+ GET /admin 200 in 406ms (compile: 11ms, proxy.ts: 209ms, render: 186ms)
+ GET /admin/settings 200 in 401ms (compile: 5ms, proxy.ts: 125ms, render: 270ms)
+ GET /admin/login 200 in 425ms (compile: 9ms, proxy.ts: 5ms, render: 411ms)
+ GET /admin 200 in 416ms (compile: 4ms, proxy.ts: 143ms, render: 268ms)
+ GET /admin 200 in 445ms (compile: 16ms, proxy.ts: 202ms, render: 226ms)
+ GET /admin/settings 200 in 435ms (compile: 6ms, proxy.ts: 136ms, render: 293ms)
+ GET /admin/login 200 in 262ms (compile: 8ms, proxy.ts: 8ms, render: 246ms)
+ GET /admin 200 in 460ms (compile: 5ms, proxy.ts: 112ms, render: 344ms)
+ GET /admin 200 in 431ms (compile: 19ms, proxy.ts: 178ms, render: 234ms)
+ GET /admin/settings 200 in 358ms (compile: 5ms, proxy.ts: 107ms, render: 246ms)
