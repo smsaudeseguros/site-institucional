@@ -1,8 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/lib/supabase/client"
-import { triggerWebhook } from "@/lib/webhook"
+import { submitLead } from "@/app/actions/submit-lead"
 import { Mail, MapPin, Phone, Send } from "lucide-react"
 import * as React from "react"
 import { toast } from "sonner"
@@ -28,7 +27,6 @@ export function Contact({ data }: ContactProps) {
 
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [submitted, setSubmitted] = React.useState(false)
-  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -36,22 +34,25 @@ export function Contact({ data }: ContactProps) {
 
     const formData = new FormData(e.currentTarget)
     const submissionData = {
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      email: formData.get("email"),
-      interest: formData.get("interest"),
-      message: formData.get("message"),
+      name: formData.get("name") as string,
+      phone: formData.get("phone") as string,
+      email: formData.get("email") as string,
+      interest: formData.get("interest") as string,
     }
 
+    const message = formData.get("message") as string
+    const metadata = message ? { message } : null
+
     try {
-      const { data: insertedLead, error } = await supabase.from('leads').insert([submissionData]).select().single()
-      if (error) throw error
+      const result = await submitLead(submissionData, metadata)
+
+      if (!result.success) {
+         throw new Error(result.error)
+      }
 
       setSubmitted(true)
       toast.success("Mensagem enviada com sucesso!")
 
-      // Fire webhook asynchronously
-      triggerWebhook(insertedLead)
     } catch (error) {
       console.error("Error submitting form:", error)
       toast.error("Ocorreu um erro ao enviar. Tente novamente.")

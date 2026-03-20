@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { createClient } from "@/lib/supabase/client"
-import { triggerWebhook } from "@/lib/webhook"
+import { submitLead } from "@/app/actions/submit-lead"
 import { toast } from "sonner"
 import { maskPhone, maskCNPJ, maskCurrency } from "@/lib/masks"
 import { CheckCircle2 } from "lucide-react"
@@ -82,8 +81,6 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
     e.preventDefault()
     setIsSubmitting(true)
 
-    const supabase = createClient()
-
     const metadata: any = {}
 
     // Always attach PJ context if checked
@@ -116,20 +113,21 @@ export function SolutionsFormModal({ isOpen, onClose, serviceTitle, buttonTextFo
     }
 
     try {
-        const { data: insertedLead, error } = await supabase.from('leads').insert({
+        const submissionData = {
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
             interest: serviceTitle,
-            metadata: Object.keys(metadata).length > 0 ? metadata : null
-        }).select().single()
+        }
 
-        if (error) throw error
+        const result = await submitLead(submissionData, metadata)
+
+        if (!result.success) {
+            throw new Error(result.error)
+        }
 
         setIsSuccess(true)
 
-        // Fire webhook asynchronously
-        triggerWebhook(insertedLead)
     } catch (error) {
         console.error("Error submitting lead:", error)
         toast.error("Ocorreu um erro ao enviar seus dados. Tente novamente.")
