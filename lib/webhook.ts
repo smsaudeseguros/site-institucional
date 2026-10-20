@@ -17,22 +17,26 @@ export async function triggerWebhook(leadData: any) {
             .single()
 
         if (error || !config || !config.webhook_n8n_url) {
-            // Webhook not configured or error fetching it, fail silently
+            console.warn("Webhook n8n URL not configured or failed to fetch config:", error)
             return
         }
 
         const url = config.webhook_n8n_url
 
-        // Execute async request and log the outcome
+        // Execute request with timeout and log the outcome
         try {
-            const start = Date.now()
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => controller.abort(), 8000)
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(leadData),
+                signal: controller.signal
             })
+            clearTimeout(timeoutId)
 
             // Parse headers
             const responseHeaders: any = {}
@@ -48,7 +52,7 @@ export async function triggerWebhook(leadData: any) {
                 responseBodyText = "Could not parse response body"
             }
 
-            // Log success to DB
+            // Log success/response to DB
             await supabaseAdmin.from('webhook_logs').insert({
                 url,
                 request_body: leadData,
@@ -60,13 +64,17 @@ export async function triggerWebhook(leadData: any) {
         } catch (fetchErr: any) {
             console.error("Failed to send webhook to n8n:", fetchErr)
 
+            const errorMessage = fetchErr.name === 'AbortError' 
+                ? "Request timeout after 8000ms" 
+                : (fetchErr.message || "Network error or timeout")
+
             // Log network failure to DB
             await supabaseAdmin.from('webhook_logs').insert({
                 url,
                 request_body: leadData,
                 response_status: 0,
                 response_headers: null,
-                response_body: fetchErr.message || "Network error or timeout"
+                response_body: errorMessage
             })
         }
 

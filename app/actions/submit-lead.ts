@@ -33,8 +33,12 @@ export async function submitLead(submissionData: any, metadata: any = null) {
         error_message: null
     })
 
-    // Fire webhook asynchronously (do not await, let it run in the background)
-    triggerWebhook(insertedLead).catch(console.error)
+    // Fire webhook and wait for execution (guarantees completion before serverless function exits)
+    try {
+      await triggerWebhook(insertedLead)
+    } catch (webhookErr) {
+      console.error("Non-fatal error triggering webhook:", webhookErr)
+    }
 
     return { success: true, lead: insertedLead }
 
